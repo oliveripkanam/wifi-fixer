@@ -15,7 +15,7 @@ A simple browser-based WiFi diagnostics tool that helps users identify common Wi
 1. Download or clone this repository
 2. Open `wifi-diagnostics.html` in any modern web browser
 3. Click "Start Diagnostics" to run the tests
-4. Review the results and follow the recommendations
+4. Review the results and run network.bat for basic fixes
 
 ## Technologies Used
 
