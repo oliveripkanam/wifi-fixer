@@ -1,4 +1,4 @@
-# WiFi Fixer
+# WiFi Diagnostics and Fixing Tool
 
 ![demo](https://github.com/user-attachments/assets/67eb1f47-e737-45eb-9271-91a0b39508da)
 
