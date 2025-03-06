@@ -1,6 +1,7 @@
 # WiFi Fixer
 
-![image](https://github.com/user-attachments/assets/660f2515-382b-4989-a801-ba49839eef55)
+![demo](https://github.com/user-attachments/assets/67eb1f47-e737-45eb-9271-91a0b39508da)
+
 
 A simple browser-based WiFi diagnostics tool that helps users identify common WiFi issues without requiring any installations.
 
