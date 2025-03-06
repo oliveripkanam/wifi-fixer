@@ -35,6 +35,24 @@
         button:hover {
             background-color: #45a049;
         }
+        #fix-button {
+            background-color: #2196F3;
+            margin-left: 10px;
+        }
+        #fix-button:hover {
+            background-color: #0b7dda;
+        }
+        #roadmap-button {
+            background-color: #9C27B0;
+            margin-left: 10px;
+        }
+        #roadmap-button:hover {
+            background-color: #7B1FA2;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
         .result-container {
             margin-top: 20px;
         }
@@ -70,32 +88,155 @@
             line-height: 20px;
             color: white;
         }
+        .instructions {
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+            padding: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .phase {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .phase h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+        #main-page, #roadmap-page {
+            transition: opacity 0.3s ease;
+        }
+        #roadmap-page {
+            display: none;
+        }
+        .back-button {
+            background-color: #607D8B;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .back-button:hover {
+            background-color: #455A64;
+        }
     </style>
 </head>
 <body>
-    <h1>WiFi Diagnostics Tool</h1>
-    
-    <div class="diagnostic-container">
-        <h2>Check Your WiFi Connection</h2>
-        <p>This tool will help diagnose common WiFi issues:</p>
-        <ul>
-            <li>Connection stability</li>
-            <li>Ping (latency)</li>
-            <li>Download speed</li>
-            <li>Upload speed</li>
-        </ul>
+    <div id="main-page">
+        <h1>WiFi Diagnostics Tool</h1>
         
-        <button id="start-test">Start Diagnostics</button>
-        
-        <div id="progress" style="display: none;">
-            <div id="progress-bar">0%</div>
+        <div class="diagnostic-container">
+            <h2>Check Your WiFi Connection</h2>
+            <p>This tool will help diagnose common WiFi issues:</p>
+            <ul>
+                <li>Connection stability</li>
+                <li>Ping (latency)</li>
+                <li>Download speed</li>
+                <li>Upload speed</li>
+            </ul>
+            
+            <div class="button-container">
+                <button id="start-test">Start Diagnostics</button>
+                <button id="fix-button" style="display: none;">Download Fix Script</button>
+                <button id="roadmap-button">View Roadmap</button>
+            </div>
+            
+            <div id="fix-instructions" class="instructions">
+                <h3>How to use the Fix Script:</h3>
+                <ol>
+                    <li>Download the network.bat file</li>
+                    <li>Right-click on the downloaded file and select "Run as administrator"</li>
+                    <li>Follow the on-screen prompts</li>
+                    <li>After the script completes, restart your computer for best results</li>
+                </ol>
+                <p><strong>Note:</strong> This script will reset your network settings and may temporarily disconnect you from the internet.</p>
+            </div>
+            
+            <div id="progress" style="display: none;">
+                <div id="progress-bar">0%</div>
+            </div>
+            
+            <div id="results" class="result-container"></div>
         </div>
+    </div>
+    
+    <div id="roadmap-page">
+        <button class="back-button" id="back-button">← Back to Diagnostics</button>
+        <h1>Future Improvements Roadmap</h1>
         
-        <div id="results" class="result-container"></div>
+        <div class="diagnostic-container">
+            <p>We're constantly working to improve the WiFi Diagnostics Tool. Here's what you can expect in future updates:</p>
+            
+            <div class="phase">
+                <h3>Phase 1: Essential Diagnostic Enhancements</h3>
+                <p>These features will add the most immediate value with relatively simple implementation:</p>
+                <ul>
+                    <li><strong>DNS Resolution Test</strong> - Test if common DNS servers are reachable</li>
+                    <li><strong>Packet Loss Test</strong> - Basic implementation to detect dropped packets</li>
+                    <li><strong>Test History</strong> - Store results in localStorage</li>
+                    <li><strong>Targeted Fix Scripts</strong> - Offer different fixes based on detected issues</li>
+                </ul>
+            </div>
+            
+            <div class="phase">
+                <h3>Phase 2: User Experience Improvements</h3>
+                <p>These will make the tool more user-friendly:</p>
+                <ul>
+                    <li><strong>Save Results</strong> - Export functionality</li>
+                    <li><strong>Dark Mode</strong> - Add a simple toggle</li>
+                    <li><strong>Mobile Optimization</strong> - Enhance responsive design</li>
+                    <li><strong>Fix Explanations</strong> - More detailed information about each fix</li>
+                </ul>
+            </div>
+            
+            <div class="phase">
+                <h3>Phase 3: Advanced Diagnostics</h3>
+                <p>These require more complex implementation:</p>
+                <ul>
+                    <li><strong>Router Information</strong> - Detect network details when possible</li>
+                    <li><strong>Real Upload Speed Test</strong> - Would require a backend component</li>
+                    <li><strong>WiFi Channel Analysis</strong> - More advanced network detection</li>
+                    <li><strong>Continuous Monitoring</strong> - Background testing capabilities</li>
+                </ul>
+            </div>
+            
+            <div class="phase">
+                <h3>Phase 4: Premium Features</h3>
+                <p>These would transform it into a more comprehensive tool:</p>
+                <ul>
+                    <li><strong>ISP Outage Checker</strong> - Integration with external APIs</li>
+                    <li><strong>VPN Impact Analysis</strong> - Before/after testing with VPN detection</li>
+                    <li><strong>Bandwidth Usage Breakdown</strong> - More advanced network monitoring</li>
+                    <li><strong>Hardware Recommendations</strong> - Intelligence to suggest equipment</li>
+                </ul>
+            </div>
+            
+            <p>We appreciate your feedback! If you have suggestions for additional features, please let us know.</p>
+        </div>
     </div>
     
     <script>
         document.getElementById('start-test').addEventListener('click', startDiagnostics);
+        document.getElementById('fix-button').addEventListener('click', downloadFixScript);
+        document.getElementById('roadmap-button').addEventListener('click', showRoadmap);
+        document.getElementById('back-button').addEventListener('click', showMainPage);
+        
+        function showRoadmap() {
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('roadmap-page').style.display = 'block';
+        }
+        
+        function showMainPage() {
+            document.getElementById('roadmap-page').style.display = 'none';
+            document.getElementById('main-page').style.display = 'block';
+        }
         
         function startDiagnostics() {
             const resultsDiv = document.getElementById('results');
@@ -106,6 +247,10 @@
             progressBar.style.display = 'block';
             progressBarInner.style.width = '0%';
             progressBarInner.textContent = '0%';
+            
+            // Hide fix button during test
+            document.getElementById('fix-button').style.display = 'none';
+            document.getElementById('fix-instructions').style.display = 'none';
             
             // Check if online
             addResult('Basic Connectivity', navigator.onLine ? 'Connected' : 'Disconnected', navigator.onLine ? 'good' : 'bad');
@@ -125,6 +270,10 @@
                     updateProgress(90);
                     testConnectionStability();
                     updateProgress(100);
+                    
+                    // Show fix button after tests complete
+                    document.getElementById('fix-button').style.display = 'inline-block';
+                    document.getElementById('fix-instructions').style.display = 'block';
                 });
         }
         
@@ -279,19 +428,111 @@
             
             addResult('Connection Stability', connectionStatus, status);
             
-            // Add recommendations based on overall results
+            // Show specific recommendations based on test results
+            showRecommendations();
+        }
+        
+        function showRecommendations() {
             const resultsDiv = document.getElementById('results');
-            const recommendations = document.createElement('div');
-            recommendations.className = 'result-item';
-            recommendations.innerHTML = `
-                <strong>Recommendations:</strong>
-                <ul>
-                    <li>If experiencing high ping: Reduce the number of devices on your network or move closer to your router</li>
-                    <li>If speeds are slow: Check if other devices are using bandwidth, or contact your ISP</li>
-                    <li>If connection is unstable: Restart your router or check for interference</li>
-                </ul>
-            `;
-            resultsDiv.appendChild(recommendations);
+            const resultItems = document.querySelectorAll('.result-item.warning, .result-item.bad');
+            
+            if (resultItems.length > 0) {
+                const recommendationsDiv = document.createElement('div');
+                recommendationsDiv.className = 'result-item';
+                
+                let recommendationsHTML = '<strong>Recommended Fixes:</strong>';
+                
+                // Process each non-green result
+                resultItems.forEach(item => {
+                    const testName = item.querySelector('strong').textContent.replace(':', '');
+                    
+                    recommendationsHTML += `<div style="margin-top: 10px;"><strong>${testName}</strong><ul>`;
+                    
+                    if (testName.includes('Ping') || testName.includes('Latency')) {
+                        recommendationsHTML += `
+                            <li>Reduce the number of devices on your network</li>
+                            <li>Move closer to your router</li>
+                            <li>Check for interference from other electronic devices</li>
+                        `;
+                    }
+                    
+                    if (testName.includes('Download Speed')) {
+                        recommendationsHTML += `
+                            <li>Check if other devices are using bandwidth</li>
+                            <li>Restart your router</li>
+                            <li>Contact your ISP if speeds are consistently slow</li>
+                        `;
+                    }
+                    
+                    if (testName.includes('Upload Speed')) {
+                        recommendationsHTML += `
+                            <li>Close applications that might be uploading in the background</li>
+                            <li>Check for malware that might be using your connection</li>
+                            <li>Contact your ISP if speeds are consistently slow</li>
+                        `;
+                    }
+                    
+                    if (testName.includes('Connection Stability') || testName.includes('Basic Connectivity')) {
+                        recommendationsHTML += `
+                            <li>Restart your router</li>
+                            <li>Check for loose cable connections</li>
+                            <li>Try connecting to a different WiFi network if available</li>
+                        `;
+                    }
+                    
+                    recommendationsHTML += '</ul></div>';
+                });
+                
+                // Add note about fix script
+                recommendationsHTML += `
+                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd;">
+                        <strong>Need a quick fix?</strong> You can download and run our network fix script by clicking the blue button above.
+                    </div>
+                `;
+                
+                recommendationsDiv.innerHTML = recommendationsHTML;
+                resultsDiv.appendChild(recommendationsDiv);
+            } else {
+                // If all tests are green, show a simple success message
+                const recommendationsDiv = document.createElement('div');
+                recommendationsDiv.className = 'result-item good';
+                recommendationsDiv.innerHTML = `
+                    <strong>Great news!</strong> All tests passed successfully. Your WiFi connection appears to be working well.
+                    <div style="margin-top: 10px;">
+                        If you're still experiencing issues, you can try downloading and running our network fix script by clicking the blue button above.
+                    </div>
+                `;
+                resultsDiv.appendChild(recommendationsDiv);
+            }
+        }
+        
+        function downloadFixScript() {
+            // Create the batch file content
+            const batchContent = `@echo off
+echo Running network reset commands...
+
+:: Run each command with admin privileges
+netsh winsock reset
+netsh int ip reset
+ipconfig /release
+ipconfig /renew
+
+echo Network reset complete.
+pause
+`;
+            
+            // Create a Blob with the batch file content
+            const blob = new Blob([batchContent], { type: 'application/bat' });
+            
+            // Create a download link
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = 'network-fix.bat';
+            
+            // Trigger the download
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
         }
     </script>
 </body>
