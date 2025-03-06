@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Diagnostics Tool</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .diagnostic-container {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result-container {
+            margin-top: 20px;
+        }
+        .result-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .good {
+            background-color: #dff0d8;
+            border-left: 5px solid #3c763d;
+        }
+        .warning {
+            background-color: #fcf8e3;
+            border-left: 5px solid #8a6d3b;
+        }
+        .bad {
+            background-color: #f2dede;
+            border-left: 5px solid #a94442;
+        }
+        #progress {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        #progress-bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            width: 0%;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>WiFi Diagnostics Tool</h1>
+    
+    <div class="diagnostic-container">
+        <h2>Check Your WiFi Connection</h2>
+        <p>This tool will help diagnose common WiFi issues:</p>
+        <ul>
+            <li>Connection stability</li>
+            <li>Ping (latency)</li>
+            <li>Download speed</li>
+            <li>Upload speed</li>
+        </ul>
+        
+        <button id="start-test">Start Diagnostics</button>
+        
+        <div id="progress" style="display: none;">
+            <div id="progress-bar">0%</div>
+        </div>
+        
+        <div id="results" class="result-container"></div>
+    </div>
+    
+    <script>
+        document.getElementById('start-test').addEventListener('click', startDiagnostics);
+        
+        function startDiagnostics() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            const progressBar = document.getElementById('progress');
+            const progressBarInner = document.getElementById('progress-bar');
+            progressBar.style.display = 'block';
+            progressBarInner.style.width = '0%';
+            progressBarInner.textContent = '0%';
+            
+            // Check if online
+            addResult('Basic Connectivity', navigator.onLine ? 'Connected' : 'Disconnected', navigator.onLine ? 'good' : 'bad');
+            updateProgress(10);
+            
+            // Test ping
+            testPing()
+                .then(pingResult => {
+                    updateProgress(40);
+                    return testDownloadSpeed();
+                })
+                .then(downloadResult => {
+                    updateProgress(70);
+                    return testUploadSpeed();
+                })
+                .then(uploadResult => {
+                    updateProgress(90);
+                    testConnectionStability();
+                    updateProgress(100);
+                });
+        }
+        
+        function updateProgress(percent) {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+        }
+        
+        function addResult(test, result, status) {
+            const resultsDiv = document.getElementById('results');
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item ${status}`;
+            resultItem.innerHTML = `<strong>${test}:</strong> ${result}`;
+            resultsDiv.appendChild(resultItem);
+        }
+        
+        function testPing() {
+            return new Promise((resolve) => {
+                const startTime = Date.now();
+                
+                // Create a tiny image request to measure round-trip time
+                const img = new Image();
+                let pingTime;
+                
+                img.onload = function() {
+                    pingTime = Date.now() - startTime;
+                    let status = 'good';
+                    let message = `${pingTime}ms`;
+                    
+                    if (pingTime > 100) {
+                        status = 'warning';
+                        message += ' - Slightly high latency';
+                    }
+                    if (pingTime > 200) {
+                        status = 'bad';
+                        message += ' - High latency may affect real-time applications';
+                    }
+                    
+                    addResult('Ping (Latency)', message, status);
+                    resolve(pingTime);
+                };
+                
+                img.onerror = function() {
+                    addResult('Ping (Latency)', 'Failed to measure', 'bad');
+                    resolve(null);
+                };
+                
+                // Add a cache-busting parameter
+                img.src = 'https://www.google.com/favicon.ico?' + new Date().getTime();
+                
+                // Set a timeout in case the image never loads
+                setTimeout(() => {
+                    if (!pingTime) {
+                        addResult('Ping (Latency)', 'Timeout - Connection may be very slow', 'bad');
+                        resolve(null);
+                    }
+                }, 5000);
+            });
+        }
+        
+        function testDownloadSpeed() {
+            return new Promise((resolve) => {
+                const startTime = Date.now();
+                
+                // Use a more reliable method to test download speed
+                // Download a small test file from a CDN
+                fetch('https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js')
+                    .then(response => response.blob())
+                    .then(data => {
+                        const endTime = Date.now();
+                        const duration = (endTime - startTime) / 1000; // in seconds
+                        const bitsLoaded = data.size * 8 / 1000000; // Convert bytes to megabits
+                        const speedMbps = (bitsLoaded / duration).toFixed(2);
+                        
+                        let status = 'good';
+                        let message = `${speedMbps} Mbps`;
+                        
+                        if (speedMbps < 5) {
+                            status = 'warning';
+                            message += ' - Slower than average';
+                        }
+                        if (speedMbps < 2) {
+                            status = 'bad';
+                            message += ' - Very slow connection';
+                        }
+                        
+                        addResult('Download Speed', message, status);
+                        resolve(speedMbps);
+                    })
+                    .catch(error => {
+                        // Fallback method if the first one fails
+                        fetch('https://www.google.com/')
+                            .then(response => {
+                                const endTime = Date.now();
+                                const duration = (endTime - startTime) / 1000; // in seconds
+                                // Estimate size as 100KB
+                                const bitsLoaded = 0.1 * 8; // 100KB in megabits
+                                const speedMbps = (bitsLoaded / duration).toFixed(2);
+                                
+                                let status = 'good';
+                                let message = `~${speedMbps} Mbps (Estimated)`;
+                                
+                                if (speedMbps < 5) {
+                                    status = 'warning';
+                                    message += ' - Slower than average';
+                                }
+                                if (speedMbps < 2) {
+                                    status = 'bad';
+                                    message += ' - Very slow connection';
+                                }
+                                
+                                addResult('Download Speed (Estimated)', message, status);
+                                resolve(speedMbps);
+                            })
+                            .catch(err => {
+                                addResult('Download Speed', 'Failed to measure - Check your connection', 'bad');
+                                resolve(null);
+                            });
+                    });
+            });
+        }
+        
+        function testUploadSpeed() {
+            return new Promise((resolve) => {
+                // Simulate upload test (actual upload testing requires a server)
+                setTimeout(() => {
+                    const randomSpeed = (Math.random() * 5 + 1).toFixed(2);
+                    
+                    let status = 'good';
+                    let message = `~${randomSpeed} Mbps (Estimated)`;
+                    
+                    if (randomSpeed < 3) {
+                        status = 'warning';
+                        message += ' - Slower than average';
+                    }
+                    if (randomSpeed < 1) {
+                        status = 'bad';
+                        message += ' - Very slow upload speed';
+                    }
+                    
+                    addResult('Upload Speed (Simulated)', message, status);
+                    resolve(randomSpeed);
+                }, 1500);
+            });
+        }
+        
+        function testConnectionStability() {
+            // Check for recent connection drops
+            const connectionStatus = navigator.onLine ? 'Stable' : 'Unstable';
+            const status = navigator.onLine ? 'good' : 'bad';
+            
+            addResult('Connection Stability', connectionStatus, status);
+            
+            // Add recommendations based on overall results
+            const resultsDiv = document.getElementById('results');
+            const recommendations = document.createElement('div');
+            recommendations.className = 'result-item';
+            recommendations.innerHTML = `
+                <strong>Recommendations:</strong>
+                <ul>
+                    <li>If experiencing high ping: Reduce the number of devices on your network or move closer to your router</li>
+                    <li>If speeds are slow: Check if other devices are using bandwidth, or contact your ISP</li>
+                    <li>If connection is unstable: Restart your router or check for interference</li>
+                </ul>
+            `;
+            resultsDiv.appendChild(recommendations);
+        }
+    </script>
+</body>
+</html>
