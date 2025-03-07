@@ -14,8 +14,11 @@ Visit [FixMySignal](https://fixmysignal.netlify.app/) to use the tool directly i
 - **Ping/Latency Test**: Measures response time to servers
 - **Download Speed Test**: Estimates your download bandwidth
 - **Upload Speed Test**: Simulates upload speed testing
+- **DNS Resolution Test**: Checks connectivity to major DNS providers
+- **Packet Loss Detection**: Measures packet loss percentage
+- **Test History**: View and analyze previous diagnostic results
 - **Smart Recommendations**: Provides targeted suggestions based on test results
-- **Network Fix Script**: Download a script to reset common network issues
+- **Targeted Fix Scripts**: Download custom scripts based on detected issues
 - **Future Roadmap**: View planned improvements and upcoming features
 
 ## How to Use
@@ -25,10 +28,11 @@ Visit [FixMySignal](https://fixmysignal.netlify.app/) to use the tool directly i
 2. Click "Start Diagnostics" to run the tests
 3. Review the results and download the fix script if needed
 4. Follow the on-screen instructions to apply fixes
+5. View your test history to track connectivity trends
 
 ### Local Version
 1. Download or clone this repository
-2. Open `wifi-diagnostics.html` in any modern web browser
+2. Open `index.html` in any modern web browser
 3. Follow the same steps as the online version
 
 ## Technologies Used
@@ -36,15 +40,16 @@ Visit [FixMySignal](https://fixmysignal.netlify.app/) to use the tool directly i
 - HTML
 - CSS
 - JavaScript (vanilla)
+- localStorage for test history
 - Hosted on Netlify
 
 ## Upcoming Improvements
 
 Visit the "View Roadmap" section in the application to see our planned improvements, including:
-- DNS Resolution Testing
-- Packet Loss Detection
-- Test History Storage
-- Dark Mode
+- Save Results - Export functionality
+- Dark Mode - Add a simple toggle
+- Mobile Optimization - Enhance responsive design
+- Advanced network diagnostics
 - And much more!
 
 ## License
