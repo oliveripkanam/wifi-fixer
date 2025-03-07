@@ -107,10 +107,10 @@
             border-bottom: 1px solid #ddd;
             padding-bottom: 8px;
         }
-        #main-page, #roadmap-page {
+        #main-page, #roadmap-page, #history-page {
             transition: opacity 0.3s ease;
         }
-        #roadmap-page {
+        #roadmap-page, #history-page {
             display: none;
         }
         .back-button {
@@ -126,6 +126,61 @@
         .back-button:hover {
             background-color: #455A64;
         }
+        .history-section {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .history-list {
+            margin-top: 10px;
+        }
+        .history-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+        .history-item.good {
+            background-color: #dff0d8;
+            border-left: 3px solid #3c763d;
+        }
+        .history-item.warning {
+            background-color: #fcf8e3;
+            border-left: 3px solid #8a6d3b;
+        }
+        .history-item.bad {
+            background-color: #f2dede;
+            border-left: 3px solid #a94442;
+        }
+        .history-details {
+            margin-top: 8px;
+            font-size: 14px;
+            padding-left: 10px;
+            border-left: 2px solid #ddd;
+        }
+        .history-details p {
+            margin: 5px 0;
+        }
+        .history-test-details {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .test-detail-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+        #clear-history-button {
+            background-color: #f44336;
+        }
+        #clear-history-button:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -140,11 +195,14 @@
                 <li>Ping (latency)</li>
                 <li>Download speed</li>
                 <li>Upload speed</li>
+                <li>DNS resolution</li>
+                <li>Packet loss</li>
             </ul>
             
             <div class="button-container">
                 <button id="start-test">Start Diagnostics</button>
                 <button id="fix-button" style="display: none;">Download Fix Script</button>
+                <button id="history-button" style="display: none;">View Test History</button>
                 <button id="roadmap-button">View Roadmap</button>
             </div>
             
@@ -175,8 +233,8 @@
             <p>We're constantly working to improve the WiFi Diagnostics Tool. Here's what you can expect in future updates:</p>
             
             <div class="phase">
-                <h3>Phase 1: Essential Diagnostic Enhancements</h3>
-                <p>These features will add the most immediate value with relatively simple implementation:</p>
+                <h3>Phase 1: Essential Diagnostic Enhancements ✅ DONE</h3>
+                <p>These features have been implemented:</p>
                 <ul>
                     <li><strong>DNS Resolution Test</strong> - Test if common DNS servers are reachable</li>
                     <li><strong>Packet Loss Test</strong> - Basic implementation to detect dropped packets</li>
@@ -222,19 +280,141 @@
         </div>
     </div>
     
+    <div id="history-page">
+        <button class="back-button" id="history-back-button">← Back to Diagnostics</button>
+        <h1>Test History</h1>
+        
+        <div class="diagnostic-container">
+            <p>This shows your previous WiFi diagnostic test results:</p>
+            <div id="history-content"></div>
+        </div>
+    </div>
+    
     <script>
         document.getElementById('start-test').addEventListener('click', startDiagnostics);
         document.getElementById('fix-button').addEventListener('click', downloadFixScript);
         document.getElementById('roadmap-button').addEventListener('click', showRoadmap);
         document.getElementById('back-button').addEventListener('click', showMainPage);
+        document.getElementById('history-button').addEventListener('click', showHistory);
+        document.getElementById('history-back-button').addEventListener('click', showMainPage);
+        
+        function showHistory() {
+            // Load and display the history data
+            updateHistoryPage();
+            
+            // Show the history page
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('roadmap-page').style.display = 'none';
+            document.getElementById('history-page').style.display = 'block';
+        }
+        
+        function updateHistoryPage() {
+            const historyContent = document.getElementById('history-content');
+            const history = getTestHistory();
+            
+            if (history.length === 0) {
+                historyContent.innerHTML = '<p>No previous test results found.</p>';
+                return;
+            }
+            
+            let historyHTML = '<div class="history-list">';
+            
+            history.forEach((entry, index) => {
+                const date = new Date(entry.timestamp);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                
+                // Extract overall status
+                let statusClass = 'good';
+                if (entry.results.warnings > 0) statusClass = 'warning';
+                if (entry.results.errors > 0) statusClass = 'bad';
+                
+                historyHTML += `
+                <div class="history-item ${statusClass}" data-index="${index}">
+                    <strong>${formattedDate}</strong>: 
+                    ${entry.results.errors > 0 ? 'Issues detected' : 'No issues detected'}
+                    <div class="history-details">
+                        <p>Warnings: ${entry.results.warnings}</p>
+                        <p>Errors: ${entry.results.errors}</p>
+                    </div>
+                    <div class="history-test-details" id="test-details-${index}"></div>
+                </div>`;
+            });
+            
+            historyHTML += '</div>';
+            
+            // Add a clear history button
+            historyHTML += `
+            <div style="margin-top: 20px;">
+                <button id="clear-history-button" class="back-button">Clear History</button>
+            </div>`;
+            
+            historyContent.innerHTML = historyHTML;
+            
+            // Add event listener to the clear history button
+            document.getElementById('clear-history-button').addEventListener('click', clearHistory);
+            
+            // Add click event listeners to history items
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    showTestDetails(index);
+                });
+            });
+        }
+        
+        function showTestDetails(index) {
+            const history = getTestHistory();
+            const entry = history[index];
+            const detailsContainer = document.getElementById(`test-details-${index}`);
+            
+            // Toggle visibility
+            if (detailsContainer.style.display === 'block') {
+                detailsContainer.style.display = 'none';
+                return;
+            }
+            
+            // Hide all other test details
+            document.querySelectorAll('.history-test-details').forEach(container => {
+                container.style.display = 'none';
+            });
+            
+            // If no detailed test information is available
+            if (!entry.results.details || entry.results.details.length === 0) {
+                detailsContainer.innerHTML = '<p>Detailed test information is not available for this entry.</p>';
+                detailsContainer.style.display = 'block';
+                return;
+            }
+            
+            // Build HTML for test details
+            let detailsHTML = '<h3>Test Details</h3>';
+            
+            entry.results.details.forEach(test => {
+                detailsHTML += `
+                <div class="test-detail-item ${test.status}">
+                    <strong>${test.name}</strong>: ${test.result}
+                </div>`;
+            });
+            
+            detailsContainer.innerHTML = detailsHTML;
+            detailsContainer.style.display = 'block';
+        }
+        
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear your test history?')) {
+                localStorage.removeItem('wifiDiagnosticsHistory');
+                updateHistoryPage();
+            }
+        }
         
         function showRoadmap() {
             document.getElementById('main-page').style.display = 'none';
+            document.getElementById('history-page').style.display = 'none';
             document.getElementById('roadmap-page').style.display = 'block';
         }
         
         function showMainPage() {
             document.getElementById('roadmap-page').style.display = 'none';
+            document.getElementById('history-page').style.display = 'none';
             document.getElementById('main-page').style.display = 'block';
         }
         
@@ -248,22 +428,41 @@
             progressBarInner.style.width = '0%';
             progressBarInner.textContent = '0%';
             
-            // Hide fix button during test
+            // Hide buttons during test
             document.getElementById('fix-button').style.display = 'none';
+            document.getElementById('history-button').style.display = 'none';
             document.getElementById('fix-instructions').style.display = 'none';
             
             // Check if online
             addResult('Basic Connectivity', navigator.onLine ? 'Connected' : 'Disconnected', navigator.onLine ? 'good' : 'bad');
             updateProgress(10);
             
-            // Test ping
+            // Track warnings and errors
+            let warnings = 0;
+            let errors = 0;
+            
+            // Function to update counters based on status
+            function updateCounters(status) {
+                if (status === 'warning') warnings++;
+                if (status === 'bad') errors++;
+            }
+            
+            // Run all tests in sequence
             testPing()
                 .then(pingResult => {
+                    updateProgress(20);
+                    return testDNSResolution();
+                })
+                .then(dnsResult => {
                     updateProgress(40);
+                    return testPacketLoss();
+                })
+                .then(packetLossResult => {
+                    updateProgress(60);
                     return testDownloadSpeed();
                 })
                 .then(downloadResult => {
-                    updateProgress(70);
+                    updateProgress(80);
                     return testUploadSpeed();
                 })
                 .then(uploadResult => {
@@ -271,9 +470,43 @@
                     testConnectionStability();
                     updateProgress(100);
                     
-                    // Show fix button after tests complete
+                    // Collect all test results
+                    const testDetails = [];
+                    document.querySelectorAll('.result-item').forEach(item => {
+                        // Skip the recommendations section
+                        if (item.querySelector('strong') && !item.querySelector('strong').textContent.includes('Recommended')) {
+                            const testName = item.querySelector('strong').textContent.replace(':', '');
+                            const testResult = item.textContent.replace(testName + ':', '').trim();
+                            const testStatus = item.classList.contains('good') ? 'good' : 
+                                              item.classList.contains('warning') ? 'warning' : 'bad';
+                            
+                            testDetails.push({
+                                name: testName,
+                                result: testResult,
+                                status: testStatus
+                            });
+                            
+                            if (testStatus === 'warning') warnings++;
+                            if (testStatus === 'bad') errors++;
+                        }
+                    });
+                    
+                    // Collect all test results
+                    const testResults = {
+                        timestamp: new Date().toISOString(),
+                        warnings: warnings,
+                        errors: errors,
+                        details: testDetails
+                    };
+                    
+                    // Save test results to history
+                    saveTestResults(testResults);
+                    
+                    // Show buttons after tests complete
                     document.getElementById('fix-button').style.display = 'inline-block';
                     document.getElementById('fix-instructions').style.display = 'block';
+                    document.getElementById('history-button').style.display = 'inline-block';
+                    document.getElementById('history-button').textContent = 'View Test History';
                 });
         }
         
@@ -507,19 +740,11 @@
         }
         
         function downloadFixScript() {
-            // Create the batch file content
-            const batchContent = `@echo off
-echo Running network reset commands...
-
-:: Run each command with admin privileges
-netsh winsock reset
-netsh int ip reset
-ipconfig /release
-ipconfig /renew
-
-echo Network reset complete.
-pause
-`;
+            // Get the detected issues from results
+            const issues = getDetectedIssues();
+            
+            // Create the batch file content with targeted fixes
+            const batchContent = generateFixScriptContent(issues);
             
             // Create a Blob with the batch file content
             const blob = new Blob([batchContent], { type: 'application/bat' });
@@ -533,6 +758,243 @@ pause
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
+        }
+        
+        function getDetectedIssues() {
+            const issues = [];
+            const resultItems = document.querySelectorAll('.result-item.warning, .result-item.bad');
+            
+            resultItems.forEach(item => {
+                const text = item.textContent;
+                if (text.includes('Ping') || text.includes('Latency')) issues.push('high_latency');
+                if (text.includes('Download Speed')) issues.push('slow_download');
+                if (text.includes('Upload Speed')) issues.push('slow_upload');
+                if (text.includes('Connection Stability')) issues.push('unstable_connection');
+                if (text.includes('DNS')) issues.push('dns_issues');
+                if (text.includes('Packet Loss')) issues.push('packet_loss');
+            });
+            
+            return issues;
+        }
+        
+        function generateFixScriptContent(issues) {
+            let content = `@echo off
+echo WiFi Diagnostics Fix Script
+echo Generated on: %date% %time%
+echo.
+
+echo Checking for administrator privileges...
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+  echo Error: This script requires administrator privileges.
+  echo Please right-click and select 'Run as administrator'.
+  pause
+  exit /b 1
+)
+
+`;
+            
+            // Add commands for specific issues
+            if (issues.includes('dns_issues')) {
+                content += `
+echo Fixing DNS issues...
+ipconfig /flushdns
+echo Setting DNS to Google DNS...
+netsh interface ip set dns "Wi-Fi" static 8.8.8.8
+netsh interface ip add dns "Wi-Fi" 8.8.4.4 index=2
+echo.
+`;
+            }
+            
+            if (issues.includes('packet_loss')) {
+                content += `
+echo Fixing packet loss issues...
+netsh winsock reset
+echo.
+`;
+            }
+            
+            if (issues.includes('high_latency')) {
+                content += `
+echo Fixing high latency issues...
+netsh int tcp set global autotuninglevel=normal
+netsh int tcp set global chimney=enabled
+netsh int tcp set global ecncapability=enabled
+echo.
+`;
+            }
+            
+            if (issues.includes('slow_download') || issues.includes('slow_upload')) {
+                content += `
+echo Fixing slow connection issues...
+netsh int tcp set global congestionprovider=ctcp
+echo.
+`;
+            }
+            
+            // Always include the basic reset commands
+            content += `
+echo Running basic network reset commands...
+netsh winsock reset
+netsh int ip reset
+ipconfig /release
+ipconfig /renew
+
+echo Network reset complete.
+echo It's recommended to restart your computer now.
+pause
+`;
+            
+            return content;
+        }
+        
+        // DNS Resolution Test
+        function testDNSResolution() {
+            return new Promise((resolve) => {
+                const dnsServers = [
+                    { name: "Google DNS", ip: "8.8.8.8" },
+                    { name: "Cloudflare DNS", ip: "1.1.1.1" },
+                    { name: "OpenDNS", ip: "208.67.222.222" }
+                ];
+                
+                let successCount = 0;
+                let completedTests = 0;
+                let results = [];
+                
+                dnsServers.forEach(server => {
+                    const startTime = Date.now();
+                    
+                    // Use a timeout to handle unresponsive servers
+                    const timeoutId = setTimeout(() => {
+                        completedTests++;
+                        results.push({ server: server.name, status: "timeout", time: 3000 });
+                        checkCompletion();
+                    }, 3000);
+                    
+                    // Try to fetch a small resource from the IP with cache disabled
+                    fetch(`https://${server.ip}/favicon.ico`, { 
+                        mode: 'no-cors',
+                        cache: 'no-store',
+                        headers: { 'Cache-Control': 'no-cache' }
+                    })
+                        .then(() => {
+                            clearTimeout(timeoutId);
+                            const responseTime = Date.now() - startTime;
+                            successCount++;
+                            completedTests++;
+                            results.push({ server: server.name, status: "reachable", time: responseTime });
+                            checkCompletion();
+                        })
+                        .catch(() => {
+                            clearTimeout(timeoutId);
+                            completedTests++;
+                            results.push({ server: server.name, status: "unreachable", time: Date.now() - startTime });
+                            checkCompletion();
+                        });
+                });
+                
+                function checkCompletion() {
+                    if (completedTests === dnsServers.length) {
+                        // Display results
+                        let status = 'good';
+                        let message = `${successCount}/${dnsServers.length} DNS servers reachable`;
+                        
+                        if (successCount < dnsServers.length && successCount > 0) {
+                            status = 'warning';
+                            message += ' - Some DNS servers unreachable';
+                        }
+                        if (successCount === 0) {
+                            status = 'bad';
+                            message += ' - No DNS servers reachable, possible DNS configuration issue';
+                        }
+                        
+                        addResult('DNS Resolution', message, status);
+                        resolve({ success: successCount, total: dnsServers.length, details: results });
+                    }
+                }
+            });
+        }
+        
+        // Packet Loss Test
+        function testPacketLoss() {
+            return new Promise((resolve) => {
+                const testCount = 10; // Number of "packets" to send
+                let successCount = 0;
+                let completedTests = 0;
+                
+                // Use a series of fetch requests to simulate packets
+                for (let i = 0; i < testCount; i++) {
+                    // Add a random parameter to prevent caching
+                    const randomParam = Math.random().toString(36).substring(7);
+                    
+                    fetch(`https://www.google.com/generate_204?nocache=${randomParam}`, { 
+                        mode: 'no-cors',
+                        cache: 'no-store'
+                    })
+                        .then(() => {
+                            successCount++;
+                            completedTests++;
+                            checkCompletion();
+                        })
+                        .catch(() => {
+                            completedTests++;
+                            checkCompletion();
+                        });
+                }
+                
+                function checkCompletion() {
+                    if (completedTests === testCount) {
+                        const lossPercentage = ((testCount - successCount) / testCount) * 100;
+                        
+                        let status = 'good';
+                        let message = `${lossPercentage.toFixed(1)}% packet loss`;
+                        
+                        if (lossPercentage > 2 && lossPercentage <= 10) {
+                            status = 'warning';
+                            message += ' - Some packet loss detected';
+                        }
+                        if (lossPercentage > 10) {
+                            status = 'bad';
+                            message += ' - Significant packet loss detected';
+                        }
+                        
+                        addResult('Packet Loss', message, status);
+                        resolve({
+                            packetsSent: testCount,
+                            packetsReceived: successCount,
+                            packetsLost: testCount - successCount,
+                            lossPercentage: lossPercentage.toFixed(1)
+                        });
+                    }
+                }
+            });
+        }
+        
+        // Test History Functions
+        function saveTestResults(results) {
+            // Get existing history or initialize empty array
+            let testHistory = JSON.parse(localStorage.getItem('wifiDiagnosticsHistory') || '[]');
+            
+            // Add new test results with timestamp
+            const newEntry = {
+                timestamp: new Date().toISOString(),
+                results: results
+            };
+            
+            // Add to beginning of array (most recent first)
+            testHistory.unshift(newEntry);
+            
+            // Limit history to last 10 tests
+            if (testHistory.length > 10) {
+                testHistory = testHistory.slice(0, 10);
+            }
+            
+            // Save back to localStorage
+            localStorage.setItem('wifiDiagnosticsHistory', JSON.stringify(testHistory));
+        }
+        
+        function getTestHistory() {
+            return JSON.parse(localStorage.getItem('wifiDiagnosticsHistory') || '[]');
         }
     </script>
 </body>
