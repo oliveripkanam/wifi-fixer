@@ -1,4 +1,4 @@
-# WiFi Fixer
+# Fix My Signal
 
 https://github.com/user-attachments/assets/3a47fce6-06a7-49de-8dff-a7fec4f4a507
 
