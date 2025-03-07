@@ -1,7 +1,5 @@
 # Fix My Signal
 
-https://github.com/user-attachments/assets/3a47fce6-06a7-49de-8dff-a7fec4f4a507
-
 A simple browser-based WiFi diagnostics tool that helps users identify common WiFi issues without requiring any installations.
 
 ## Live Demo
@@ -13,6 +11,8 @@ Visit [FixMySignal](https://fixmysignal.netlify.app/) to use the tool directly i
 Fix My Signal offers a comprehensive suite of WiFi diagnostic tools with both basic and premium features to help you identify and resolve network connectivity issues.
 
 ## Basic Diagnostics
+
+![diagnostic](https://github.com/user-attachments/assets/c90b20c0-b124-471f-b527-19cbe979f816)
 
 The core diagnostic toolset helps identify fundamental WiFi issues:
 
@@ -27,6 +27,8 @@ When you run Basic Diagnostics, the tool analyzes all these aspects of your netw
 
 ## Download Fix Script
 
+![script](https://github.com/user-attachments/assets/a7aa87c6-3743-48a4-88a6-53f1ad8e3616)
+
 Based on your diagnostic results, Fix My Signal can generate customized fix scripts:
 
 - **Auto-generated Solutions**: Scripts tailored to your specific network issues
@@ -38,6 +40,8 @@ Based on your diagnostic results, Fix My Signal can generate customized fix scri
 The fix scripts can reset network adapters, flush DNS caches, reset TCP/IP stacks, and perform other network-related repairs specific to your detected issues.
 
 ## Test History
+
+![testhistory](https://github.com/user-attachments/assets/84672434-0553-4c21-a752-d474c5d27242)
 
 Keep track of your network performance over time:
 
@@ -51,6 +55,8 @@ This feature helps you determine if your network issues are consistent, intermit
 
 ## Download Test Results
 
+![textresult](https://github.com/user-attachments/assets/dea94349-ea29-45b1-b408-063d61237254)
+
 Export your diagnostic data for sharing or future reference:
 
 - **Detailed Reports**: Comprehensive breakdown of all test metrics
@@ -63,6 +69,8 @@ This feature is particularly useful when seeking help from your ISP or technical
 
 ## Advanced Diagnostics
 
+![advanced](https://github.com/user-attachments/assets/69113734-4d1b-423a-8821-cf8c865d190b)
+
 Deeper analysis tools for more complex network issues:
 
 - **Router Information**: Detects network details including gateway IP, connection type, and ISP info
@@ -73,6 +81,8 @@ Deeper analysis tools for more complex network issues:
 Advanced diagnostics help identify problems that might not appear during a quick basic test but affect your everyday usage.
 
 ## Premium Diagnostics
+
+![premium](https://github.com/user-attachments/assets/92c8607c-0a6b-43b9-b01e-695f026e4949)
 
 Our most powerful diagnostic capabilities:
 
@@ -123,3 +133,12 @@ Premium features provide deeper insights and more targeted recommendations for c
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Donations
+
+Any donations would be appreciated, so i can buy my own domain!
+
+https://ko-fi.com/oliveripkanam 
+
+<img width="336" alt="670f5a02fad2b4c413af6d15_support_me_on_kofi_badge_beige" src="https://github.com/user-attachments/assets/141e9ecd-f449-41e3-9ef9-6186da0e1192" />
+
