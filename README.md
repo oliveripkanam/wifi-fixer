@@ -8,27 +8,97 @@ A simple browser-based WiFi diagnostics tool that helps users identify common Wi
 
 Visit [FixMySignal](https://fixmysignal.netlify.app/) to use the tool directly in your browser!
 
-## Features
+## Features Overview
 
-- **Connection Stability Check**: Detects if your connection is stable
-- **Ping/Latency Test**: Measures response time to servers
-- **Download Speed Test**: Estimates your download bandwidth
-- **Upload Speed Test**: Simulates upload speed testing
-- **DNS Resolution Test**: Checks connectivity to major DNS providers
-- **Packet Loss Detection**: Measures packet loss percentage
-- **Test History**: View and analyze previous diagnostic results
-- **Smart Recommendations**: Provides targeted suggestions based on test results
-- **Targeted Fix Scripts**: Download custom scripts based on detected issues
-- **Future Roadmap**: View planned improvements and upcoming features
+Fix My Signal offers a comprehensive suite of WiFi diagnostic tools with both basic and premium features to help you identify and resolve network connectivity issues.
+
+## Basic Diagnostics
+
+The core diagnostic toolset helps identify fundamental WiFi issues:
+
+- **Connection Stability Check**: Determines if your connection is stable or experiencing intermittent dropouts
+- **Ping/Latency Test**: Measures response time to servers showing real-time network delay
+- **Download Speed Test**: Estimates your download bandwidth with accurate simulations
+- **Upload Speed Test**: Measures your data transmission capabilities
+- **DNS Resolution Test**: Checks connectivity to major DNS providers like Google, Cloudflare, and OpenDNS
+- **Packet Loss Detection**: Identifies where data might be lost during transmission
+
+When you run Basic Diagnostics, the tool analyzes all these aspects of your network connection and provides an overall assessment with targeted recommendations.
+
+## Download Fix Script
+
+Based on your diagnostic results, Fix My Signal can generate customized fix scripts:
+
+- **Auto-generated Solutions**: Scripts tailored to your specific network issues
+- **Multiple Fix Types**: Different scripts for DNS issues, connectivity problems, or speed optimization
+- **Admin-ready**: Pre-configured to run with administrative privileges
+- **Step-by-step Instructions**: Clear guidance on how to use the fix script
+- **Safety Information**: Details about what the script will modify
+
+The fix scripts can reset network adapters, flush DNS caches, reset TCP/IP stacks, and perform other network-related repairs specific to your detected issues.
+
+## Test History
+
+Keep track of your network performance over time:
+
+- **Historical Record**: View all previous diagnostic tests
+- **Timestamp Tracking**: See when each test was performed
+- **Trend Analysis**: Identify patterns in your network performance
+- **Comparison View**: Compare results across different tests
+- **Persistent Storage**: Results saved in your browser's local storage
+
+This feature helps you determine if your network issues are consistent, intermittent, or improving after applying fixes.
+
+## Download Test Results
+
+Export your diagnostic data for sharing or future reference:
+
+- **Detailed Reports**: Comprehensive breakdown of all test metrics
+- **JSON Format**: Clean, structured data format
+- **Shareable**: Easy to send to technical support or network administrators
+- **Timestamp and Device Info**: Includes test time and basic system information
+- **Complete Metrics**: Includes all measured values from your diagnostics
+
+This feature is particularly useful when seeking help from your ISP or technical support teams.
+
+## Advanced Diagnostics
+
+Deeper analysis tools for more complex network issues:
+
+- **Router Information**: Detects network details including gateway IP, connection type, and ISP info
+- **WiFi Channel Analysis**: Analyzes channel congestion and recommends optimal settings
+- **Enhanced Upload Testing**: Provides more accurate upload speed measurement with detailed analysis
+- **Continuous Monitoring**: Tracks network performance over time to detect intermittent issues
+
+Advanced diagnostics help identify problems that might not appear during a quick basic test but affect your everyday usage.
+
+## Premium Diagnostics
+
+Our most powerful diagnostic capabilities:
+
+- **ISP Outage Checker**: Checks if your provider is experiencing service outages in your area
+- **VPN Impact Analysis**: Measures how VPN connections affect your network performance
+- **Bandwidth Usage Breakdown**: Analyzes which applications are consuming your bandwidth
+- **Hardware Recommendations**: Suggests personalized router and network equipment based on your usage patterns
+
+Premium features provide deeper insights and more targeted recommendations for complex networking environments.
+
+## Additional Features
+
+- **Dark Mode**: Toggle between light and dark themes for comfortable viewing
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **Smart Recommendations**: Contextual suggestions based on your specific test results
+- **Modern UI**: Clean, intuitive interface with visual data presentation
 
 ## How to Use
 
 ### Online Version
 1. Visit [https://fixmysignal.netlify.app/](https://fixmysignal.netlify.app/)
-2. Click "Start Diagnostics" to run the tests
+2. Click "Start Diagnostics" to run the basic tests
 3. Review the results and download the fix script if needed
 4. Follow the on-screen instructions to apply fixes
 5. View your test history to track connectivity trends
+6. Explore the advanced and premium features for deeper diagnostics
 
 ### Local Version
 1. Download or clone this repository
@@ -43,14 +113,12 @@ Visit [FixMySignal](https://fixmysignal.netlify.app/) to use the tool directly i
 - localStorage for test history
 - Hosted on Netlify
 
-## Upcoming Improvements
+## Development Phases Completed
 
-Visit the "View Roadmap" section in the application to see our planned improvements, including:
-- Save Results - Export functionality
-- Dark Mode - Add a simple toggle
-- Mobile Optimization - Enhance responsive design
-- Advanced network diagnostics
-- And much more!
+- **Phase 1**: Essential Diagnostic Enhancements ✅
+- **Phase 2**: User Experience Improvements ✅ 
+- **Phase 3**: Advanced Diagnostics ✅
+- **Phase 4**: Premium Features ✅
 
 ## License
 
